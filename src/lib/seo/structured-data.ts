@@ -1,0 +1,76 @@
+import {
+  getProductionSiteUrl,
+  HOMEPAGE_DESCRIPTION,
+  SITE_NAME,
+} from "./metadata.ts";
+
+export interface StructuredDataInput {
+  siteUrl?: string | null;
+  pageTitle: string;
+  pageDescription: string;
+  pagePath: string;
+}
+
+/**
+ * Generates Schema.org JSON-LD (@graph of Organization, WebSite, and WebPage).
+ * Strictly returns null if no verified non-localhost production domain is configured.
+ * Contains only verified product information (no fabricated addresses, phones, or ratings).
+ */
+export function buildStructuredData({
+  siteUrl = getProductionSiteUrl(),
+  pageTitle,
+  pageDescription,
+  pagePath,
+}: StructuredDataInput) {
+  if (!siteUrl) {
+    return null;
+  }
+
+  const normalizedPath = pagePath.startsWith("/") ? pagePath : `/${pagePath}`;
+  const pageUrl = `${siteUrl}${normalizedPath === "/" ? "" : normalizedPath}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${siteUrl}/#organization`,
+        name: SITE_NAME,
+        url: siteUrl,
+        logo: {
+          "@type": "ImageObject",
+          url: `${siteUrl}/images/moneycontrolr-logo.jpg`,
+          width: 1024,
+          height: 745,
+        },
+        description: HOMEPAGE_DESCRIPTION,
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        url: siteUrl,
+        name: SITE_NAME,
+        description: HOMEPAGE_DESCRIPTION,
+        publisher: {
+          "@id": `${siteUrl}/#organization`,
+        },
+        inLanguage: "en",
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${pageUrl}/#webpage`,
+        url: pageUrl,
+        name: pageTitle,
+        description: pageDescription,
+        isPartOf: {
+          "@id": `${siteUrl}/#website`,
+        },
+        about: {
+          "@id": `${siteUrl}/#organization`,
+        },
+        inLanguage: "en",
+      },
+    ],
+  };
+}
+
