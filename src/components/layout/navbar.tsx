@@ -1,18 +1,60 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { type User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { BrandEmblem } from "./brand-logo";
-import { Menu, X, ArrowRight, LogOut, User as UserIcon, Settings } from "lucide-react";
+import {
+  Menu,
+  X,
+  ArrowRight,
+  LogOut,
+  User as UserIcon,
+  Settings,
+  MoreVertical,
+  Calculator,
+  Sparkles,
+  HelpCircle,
+  Mail,
+  Compass,
+} from "lucide-react";
+
+const PUBLIC_RESOURCE_LINKS = [
+  {
+    href: "/calculator",
+    label: "Daily Calculator",
+    desc: "Calculate safe limits & 50/30/20",
+    icon: Calculator,
+  },
+  {
+    href: "/features",
+    label: "Features",
+    desc: "Dynamic limits, engine & security",
+    icon: Sparkles,
+  },
+  {
+    href: "/about",
+    label: "About Us",
+    desc: "Our student-first mission",
+    icon: HelpCircle,
+  },
+  {
+    href: "/contact",
+    label: "Contact Support",
+    desc: "Reach out with questions or feedback",
+    icon: Mail,
+  },
+];
 
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [isLoggingOut, startLogoutTransition] = useTransition();
@@ -56,6 +98,35 @@ export function Navbar() {
       subscription.unsubscribe();
     };
   }, []);
+
+  // Close more menu when clicking outside or pressing Escape
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target as Node)) {
+        setMoreMenuOpen(false);
+      }
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setMoreMenuOpen(false);
+        setMobileMenuOpen(false);
+      }
+    }
+    if (moreMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [moreMenuOpen]);
+
+  // Close menus on route change
+  useEffect(() => {
+    setMoreMenuOpen(false);
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   const handleLogout = () => {
     startLogoutTransition(async () => {
@@ -134,16 +205,67 @@ export function Navbar() {
           {/* Desktop Right Actions */}
           <div className="hidden sm:flex items-center gap-3">
             {!isLoadingAuth && isVerifiedUser ? (
-              /* Verified Authenticated User View: User badge + Log Out */
-              <div className="flex items-center gap-3">
+              /* Verified Authenticated User View: User badge + 3-dots Menu + Log Out */
+              <div className="flex items-center gap-2 sm:gap-3">
                 <Link
                   href="/settings"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-light border border-primary/20 text-xs font-bold text-primary max-w-[200px] hover:bg-primary/15 transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-light border border-primary/20 text-xs font-bold text-primary max-w-[180px] hover:bg-primary/15 transition-colors"
                   title="Account & Security Settings"
                 >
                   <UserIcon className="w-3.5 h-3.5 shrink-0" />
                   <span className="truncate">{displayName}</span>
                 </Link>
+
+                {/* 3-Dots Quick Access Dropdown Menu */}
+                <div className="relative" ref={moreMenuRef}>
+                  <button
+                    type="button"
+                    onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                    className={`p-1.5 sm:p-2 rounded-full border transition-all flex items-center justify-center ${
+                      moreMenuOpen
+                        ? "bg-primary text-white border-primary shadow-sm"
+                        : "bg-surface border-border text-apptext hover:text-primary hover:border-primary/40 hover:bg-primary-light/50"
+                    }`}
+                    aria-label="More tools and support"
+                    aria-expanded={moreMenuOpen}
+                    title="Tools, Calculator & Support"
+                  >
+                    <MoreVertical className="w-4 h-4" />
+                  </button>
+
+                  {moreMenuOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-72 rounded-2xl border border-border bg-surface p-2 shadow-xl z-50 animate-in fade-in zoom-in-95">
+                      <div className="px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-apptext-muted flex items-center gap-1.5">
+                        <Compass className="w-3.5 h-3.5 text-primary" />
+                        Explore &amp; Support
+                      </div>
+                      <div className="space-y-1">
+                        {PUBLIC_RESOURCE_LINKS.map((item) => {
+                          const Icon = item.icon;
+                          return (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setMoreMenuOpen(false)}
+                              className="flex items-start gap-3 p-2.5 rounded-xl text-apptext hover:bg-primary-light hover:text-primary transition-colors group"
+                            >
+                              <div className="w-8 h-8 rounded-lg bg-primary-light group-hover:bg-primary group-hover:text-white flex items-center justify-center text-primary shrink-0 transition-colors">
+                                <Icon className="w-4 h-4" />
+                              </div>
+                              <div className="space-y-0.5 min-w-0 text-left">
+                                <div className="text-xs font-bold">{item.label}</div>
+                                <div className="text-[11px] text-apptext-muted group-hover:text-primary/80 truncate">
+                                  {item.desc}
+                                </div>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 <Button
                   variant="ghost"
                   size="md"
@@ -197,6 +319,51 @@ export function Navbar() {
 
           {/* Mobile Right Controls */}
           <div className="sm:hidden flex items-center gap-2">
+            {!isLoadingAuth && isVerifiedUser && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                  className={`p-2 rounded-full border transition-all flex items-center justify-center ${
+                    moreMenuOpen
+                      ? "bg-primary text-white border-primary shadow-sm"
+                      : "bg-surface border-border text-apptext hover:text-primary hover:border-primary/40"
+                  }`}
+                  aria-label="More options"
+                  title="Calculator & Support"
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </button>
+
+                {moreMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-border bg-surface p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95">
+                    <div className="px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-apptext-muted flex items-center gap-1.5">
+                      <Compass className="w-3.5 h-3.5 text-primary" />
+                      Explore &amp; Support
+                    </div>
+                    <div className="space-y-1">
+                      {PUBLIC_RESOURCE_LINKS.map((item) => {
+                        const Icon = item.icon;
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setMoreMenuOpen(false)}
+                            className="flex items-center gap-2.5 p-2 rounded-xl text-apptext hover:bg-primary-light hover:text-primary transition-colors"
+                          >
+                            <div className="w-7 h-7 rounded-lg bg-primary-light flex items-center justify-center text-primary shrink-0">
+                              <Icon className="w-4 h-4" />
+                            </div>
+                            <span className="text-xs font-bold">{item.label}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {!isLoadingAuth && !user && (
               <Link href="/signup">
                 <Button size="sm" className="font-semibold text-xs">
@@ -228,6 +395,34 @@ export function Navbar() {
               {item.label}
             </Link>
           ))}
+
+          {/* If authenticated, also show Explore & Support 2x2 grid inside the drawer */}
+          {showAppNav && (
+            <div className="pt-2 border-t border-border">
+              <div className="px-1 py-1 text-[10px] font-extrabold uppercase tracking-wider text-apptext-muted flex items-center gap-1.5">
+                <Compass className="w-3.5 h-3.5 text-primary" />
+                Tools &amp; Support
+              </div>
+              <div className="grid grid-cols-2 gap-2 pt-1.5">
+                {PUBLIC_RESOURCE_LINKS.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-2 p-2 rounded-xl bg-background border border-border text-apptext hover:text-primary hover:border-primary/40 transition-colors"
+                    >
+                      <div className="w-7 h-7 rounded-lg bg-primary-light text-primary flex items-center justify-center shrink-0">
+                        <Icon className="w-3.5 h-3.5" />
+                      </div>
+                      <span className="text-xs font-bold truncate">{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           <div className="pt-3 border-t border-border">
             {!isLoadingAuth && isVerifiedUser && user ? (
