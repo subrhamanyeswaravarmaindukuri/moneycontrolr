@@ -22,7 +22,7 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: ["/", "/features", "/about", "/contact", "/login"],
+      allow: ["/", "/features", "/calculator", "/about", "/contact", "/login"],
       disallow: [
         "/dashboard",
         "/transactions",

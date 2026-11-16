@@ -24,6 +24,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     {
+      url: `${siteUrl}/calculator`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.95,
+    },
+    {
       url: `${siteUrl}/features`,
       lastModified,
       changeFrequency: "monthly",

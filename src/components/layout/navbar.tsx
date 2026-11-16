@@ -89,6 +89,7 @@ export function Navbar() {
       ]
     : [
         { href: "/features", label: "Features" },
+        { href: "/calculator", label: "Calculator" },
         { href: "/about", label: "About" },
         { href: "/contact", label: "Contact" },
       ];

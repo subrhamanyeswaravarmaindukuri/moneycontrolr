@@ -55,6 +55,12 @@ MoneyControlr turns your monthly budget into an adaptive daily spending guide:
    - **Zero Float Drift:** Every calculation is performed in integer paise (`₹1 = 100 paise`), eliminating IEEE-754 rounding errors.
    - **RFC 4180 CSV Export:** Export complete spending history with spreadsheet formula-injection protection (escapes `=`, `+`, `-`, `@`, tab).
 
+6. **Mobile PWA & Public Student Calculator (`/calculator`)**
+   - **Interactive Allowance Calculator:** Test any monthly allowance (₹1,000–₹1,00,000) with live daily safe-to-spend limits, weekly targets, and weekday vs. weekend pacing.
+   - **50/30/20 College Framework:** Instant allocation preview for student Needs (50%), Wants (30%), and Savings (20%).
+   - **Schema.org FAQPage Rich Snippets:** Structured JSON-LD enabling expandable question-and-answer snippets directly on Google Search results.
+   - **Progressive Web App (PWA):** Web App Manifest with standalone full-screen mobile experience and 1-tap "Add to Home Screen" installation on Android and iOS.
+
 ---
 
 ## Tech Stack
@@ -132,3 +138,4 @@ Included test suites:
 ## License
 
 Private / Proprietary — MoneyControlr
+

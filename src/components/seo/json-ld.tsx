@@ -1,17 +1,23 @@
 import { buildStructuredData } from "@/lib/seo/structured-data";
 
 interface JsonLdProps {
-  pageTitle: string;
-  pageDescription: string;
-  pagePath: string;
+  pageTitle?: string;
+  pageDescription?: string;
+  pagePath?: string;
+  data?: object | null;
 }
 
-export function JsonLd({ pageTitle, pageDescription, pagePath }: JsonLdProps) {
-  const data = buildStructuredData({
-    pageTitle,
-    pageDescription,
-    pagePath,
-  });
+export function JsonLd(props: JsonLdProps) {
+  const data =
+    props.data !== undefined
+      ? props.data
+      : props.pageTitle && props.pageDescription && props.pagePath
+        ? buildStructuredData({
+            pageTitle: props.pageTitle,
+            pageDescription: props.pageDescription,
+            pagePath: props.pagePath,
+          })
+        : null;
 
   if (!data) {
     return null;

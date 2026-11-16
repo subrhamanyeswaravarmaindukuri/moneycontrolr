@@ -329,3 +329,40 @@ This document tracks all meaningful architectural, engineering, and product deci
 ### 3. Important trade-offs & limitations
 - Production search indexing and `sitemap.xml` / `robots.txt` allowlisting remain intentionally disabled until a live custom domain is configured in Vercel (`NEXT_PUBLIC_SITE_URL`) and Google Search Console verification is completed.
 - The Contact form validates inputs immediately in development and safely previews delivery feedback, while live inbox forwarding requires configuring server-only `RESEND_API_KEY` and `CONTACT_TO_EMAIL` environment variables.
+
+---
+
+## ADR 0009: Mobile PWA & Interactive Student Allowance Calculator with Google FAQPage Schema
+- **Date**: 2026-11-16
+- **Status**: Accepted / Implemented
+
+### 1. What was changed
+- **Mobile Progressive Web App (PWA)**:
+  - Created `src/app/manifest.ts` adhering to Next.js 15 `MetadataRoute.Manifest` standards:
+    - Display mode: `standalone`
+    - Brand palette: `background_color: "#EAF4EE"`, `theme_color: "#145C43"`
+    - Full icon definitions pointing to `/icon.png` (`512x512`), `/apple-icon.png` (`180x180`), and maskable `/images/mc-emblem.png` (`512x512`).
+  - Added `appleWebApp: { capable: true, statusBarStyle: "default", title: "MoneyControlr" }` to `src/app/layout.tsx` metadata for iOS full-screen execution without Safari chrome.
+  - Implemented `src/components/layout/pwa-install-banner.tsx` listening to `beforeinstallprompt` on Android Chrome with an "Install App" button, with iOS Safari "Add to Home Screen" instructions and session-based dismissal.
+- **Interactive Daily Allowance & 50/30/20 Calculator (`/calculator`)**:
+  - Created `src/app/calculator/page.tsx` and `src/components/calculator/allowance-calculator.tsx`:
+    - Real-time monthly allowance slider and input (₹1,000 to ₹1,00,000, default ₹15,000).
+    - Quick preset buttons for common student scenarios (₹6,000, ₹12,000, ₹18,000, ₹25,000).
+    - Dynamic calculation of daily safe spending limit, weekly targets, and weekday vs. weekend pacing strategies (weekday ₹425 vs. weekend ₹675).
+    - 50/30/20 student budget breakdown (Needs, Wants, Savings & emergency buffer).
+    - High-intent student FAQ accordion explaining daily allowance calculation, overspending rollovers, and free access.
+- **SEO & Google Search Snippet Enhancement**:
+  - Implemented `buildFaqStructuredData` in `src/lib/seo/structured-data.ts` generating Schema.org `FAQPage` JSON-LD to unlock expandable question snippets in Google search results.
+  - Updated `src/components/seo/json-ld.tsx` to support both automatic page structured data and specialized `data` graphs.
+  - Added `/calculator` to `src/app/sitemap.ts` (priority `0.95`) and `src/app/robots.ts` allowlist.
+  - Integrated public links to `/calculator` in `src/components/layout/navbar.tsx` and `src/components/layout/footer.tsx`.
+- **Integrity & Zero-Regression Verification**:
+  - Updated `tests/seo.test.ts` to assert `/calculator` presence in sitemap and test `buildFaqStructuredData` output.
+  - Verified 100% test passing across all 5 test suites (`npm test`) and zero compilation errors (`npx tsc --noEmit`).
+  - Zero modifications to Supabase database schema, RLS policies, authentication routes, or existing protected screens.
+
+### 2. Why this approach was chosen
+- Combining the public calculator with mobile PWA gives MoneyControlr an organic viral loop: prospective students find the calculator via high-intent Google searches (e.g. "student daily allowance calculator", "how to control daily spending"), calculate their daily limit, and are immediately prompted to install the mobile app or start tracking in MoneyControlr.
+- Standard Next.js `manifest.ts` requires no heavy external PWA libraries (like `next-pwa`) that often conflict with Next.js 15 Turbopack or App Router server actions.
+- Schema.org `FAQPage` markup directly aligns with Google's rich result guidelines for informational finance tools.
+

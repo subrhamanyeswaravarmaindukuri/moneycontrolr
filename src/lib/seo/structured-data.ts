@@ -11,6 +11,11 @@ export interface StructuredDataInput {
   pagePath: string;
 }
 
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 /**
  * Generates Schema.org JSON-LD (@graph of Organization, WebSite, and WebPage).
  * Strictly returns null if no verified non-localhost production domain is configured.
@@ -73,4 +78,46 @@ export function buildStructuredData({
     ],
   };
 }
+
+/**
+ * Builds Schema.org JSON-LD including an FAQPage entity for rich search snippet rankings.
+ */
+export function buildFaqStructuredData({
+  siteUrl = getProductionSiteUrl(),
+  pageTitle,
+  pageDescription,
+  pagePath,
+  faqs,
+}: StructuredDataInput & { faqs: readonly FaqItem[] }) {
+  if (!siteUrl) {
+    return null;
+  }
+
+  const base = buildStructuredData({ siteUrl, pageTitle, pageDescription, pagePath });
+  if (!base) {
+    return null;
+  }
+
+  const normalizedPath = pagePath.startsWith("/") ? pagePath : `/${pagePath}`;
+  const pageUrl = `${siteUrl}${normalizedPath === "/" ? "" : normalizedPath}`;
+
+  const faqEntity = {
+    "@type": "FAQPage",
+    "@id": `${pageUrl}/#faq`,
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: f.answer,
+      },
+    })),
+  };
+
+  return {
+    ...base,
+    "@graph": [...base["@graph"], faqEntity],
+  };
+}
+
 

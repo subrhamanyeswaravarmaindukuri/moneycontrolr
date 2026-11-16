@@ -7,6 +7,7 @@ import {
   NOINDEX_ROBOTS,
   SITE_NAME,
 } from "@/lib/seo/metadata";
+import { PwaInstallBanner } from "@/components/layout/pwa-install-banner";
 
 const productionUrl = getProductionSiteUrl();
 
@@ -18,6 +19,11 @@ export const metadata: Metadata = {
   },
   description: HOMEPAGE_DESCRIPTION,
   applicationName: SITE_NAME,
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: SITE_NAME,
+  },
   keywords: [
     "MoneyControlr",
     "student expense tracker",
@@ -78,8 +84,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-sans antialiased bg-background text-apptext min-h-screen">
-        {children}
+      <body className="font-sans antialiased bg-background text-apptext min-h-screen flex flex-col">
+        <PwaInstallBanner />
+        <div className="flex-1 flex flex-col">{children}</div>
       </body>
     </html>
   );

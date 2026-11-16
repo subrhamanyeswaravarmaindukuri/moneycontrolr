@@ -5,7 +5,7 @@ import {
   isProductionDomainConfigured,
   NOINDEX_ROBOTS,
 } from "../src/lib/seo/metadata.ts";
-import { buildStructuredData } from "../src/lib/seo/structured-data.ts";
+import { buildStructuredData, buildFaqStructuredData } from "../src/lib/seo/structured-data.ts";
 import sitemap from "../src/app/sitemap.ts";
 import robots from "../src/app/robots.ts";
 import {
@@ -121,6 +121,7 @@ try {
   const urls = entries.map((entry) => entry.url);
   assert.deepStrictEqual(urls, [
     "https://moneycontrolr.example.org",
+    "https://moneycontrolr.example.org/calculator",
     "https://moneycontrolr.example.org/features",
     "https://moneycontrolr.example.org/about",
     "https://moneycontrolr.example.org/contact",
@@ -133,6 +134,21 @@ try {
       `Private route leaked into sitemap: ${privateSlug}`
     );
   }
+
+  // Verify FAQPage Schema generation for rich search snippets
+  const faqJsonLd = buildFaqStructuredData({
+    pageTitle: "Calculator | MoneyControlr",
+    pageDescription: "Daily allowance calculator",
+    pagePath: "/calculator",
+    faqs: [
+      { question: "How does it work?", answer: "It divides monthly allowance by days." },
+    ],
+  });
+  assert.ok(faqJsonLd);
+  assert.strictEqual(faqJsonLd["@graph"].length, 4);
+  const faqNode = faqJsonLd["@graph"][3] as { "@type": string; mainEntity: unknown[] };
+  assert.strictEqual(faqNode["@type"], "FAQPage");
+  assert.strictEqual(faqNode.mainEntity.length, 1);
 
   const prodRobots = robots();
   assert.strictEqual(
