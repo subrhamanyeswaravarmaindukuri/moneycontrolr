@@ -60,6 +60,32 @@ export function buildStructuredData({
           "@id": `${siteUrl}/#organization`,
         },
         inLanguage: "en",
+        hasPart: [
+          {
+            "@type": "WebPage",
+            name: "Daily Allowance Calculator",
+            description: "Student Daily Allowance & 50/30/20 Budget Calculator",
+            url: `${siteUrl}/calculator`,
+          },
+          {
+            "@type": "WebPage",
+            name: "Features",
+            description: "MoneyControlr Features & Dynamic Daily Limit Engine",
+            url: `${siteUrl}/features`,
+          },
+          {
+            "@type": "WebPage",
+            name: "About Us",
+            description: "Student-First Financial Discipline & Philosophy",
+            url: `${siteUrl}/about`,
+          },
+          {
+            "@type": "WebPage",
+            name: "Contact Support",
+            description: "Get Help & Direct Student Inquiries",
+            url: `${siteUrl}/contact`,
+          },
+        ],
       },
       {
         "@type": "WebPage",

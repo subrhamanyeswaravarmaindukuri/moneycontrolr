@@ -19,6 +19,17 @@ export const metadata: Metadata = {
   },
   description: HOMEPAGE_DESCRIPTION,
   applicationName: SITE_NAME,
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/images/mc-emblem.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
