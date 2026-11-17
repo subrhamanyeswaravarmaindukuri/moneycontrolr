@@ -8,6 +8,7 @@ import {
   SITE_NAME,
 } from "@/lib/seo/metadata";
 import { PwaInstallBanner } from "@/components/layout/pwa-install-banner";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 
 const productionUrl = getProductionSiteUrl();
 
@@ -85,8 +86,13 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#145C43",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#145C43" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B1310" },
+  ],
 };
+
+const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('moneycontrolr-theme');var d=window.matchMedia('(prefers-color-scheme: dark)').matches;if(t==='dark'||(!t&&d)){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -94,10 +100,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="font-sans antialiased bg-background text-apptext min-h-screen flex flex-col">
-        <PwaInstallBanner />
-        <div className="flex-1 flex flex-col">{children}</div>
+        <ThemeProvider>
+          <PwaInstallBanner />
+          <div className="flex-1 flex flex-col">{children}</div>
+        </ThemeProvider>
       </body>
     </html>
   );

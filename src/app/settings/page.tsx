@@ -5,7 +5,9 @@ import { CategoryManager } from "@/components/settings/category-manager";
 import { RecurringManager } from "@/components/settings/recurring-manager";
 import { getCategories, getRecurringExpenses } from "@/app/transactions/actions";
 import { Badge } from "@/components/ui/badge";
-import { ShieldCheck } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { ShieldCheck, Palette } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -56,7 +58,23 @@ export default async function SettingsPage({
           {/* 2. Recurring Monthly Bills & Fixed Commitments */}
           <RecurringManager initialRecurring={recurring} categories={categories} />
 
-          {/* 3. Account Security (Password, Email Confirmation) */}
+          {/* 3. Appearance & Theme Preferences */}
+          <Card variant="flat" className="p-6 bg-surface border-border shadow-card space-y-5">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Palette className="w-5 h-5 text-primary" />
+                  <h2 className="text-lg font-bold text-apptext">Appearance &amp; Theme</h2>
+                </div>
+                <p className="text-xs sm:text-sm text-apptext-muted">
+                  Choose between crisp light mode, obsidian forest dark mode, or auto-sync with your system settings.
+                </p>
+              </div>
+            </div>
+            <ThemeToggle variant="cards" />
+          </Card>
+
+          {/* 4. Account Security (Password, Email Confirmation) */}
           <AccountSecurityForms
             currentEmail={user.email ?? ""}
             pendingNewEmail={user.new_email ?? null}

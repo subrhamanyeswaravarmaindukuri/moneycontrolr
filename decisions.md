@@ -400,4 +400,52 @@ This document tracks all meaningful architectural, engineering, and product deci
 - Separating recurring expenses from baseline daily allowance avoids the classic student trap of spending discretionary money on days 1–15 and having zero funds left when rent or mess fees are due.
 - System default categories remain immutable to ensure core analytics and baseline reporting never break.
 
+---
+
+## ADR 0011: Dark Mode Architecture, Obsidian Forest Color Palette & Zero-FOUC Implementation
+- **Date**: 2026-11-17
+- **Status**: Accepted / Implemented
+
+### 1. What was changed
+- **Tailwind CSS & Semantic Variable Tokens (`tailwind.config.ts`, `src/app/globals.css`)**:
+  - Enabled class-based dark mode (`darkMode: "class"`) in `tailwind.config.ts`.
+  - Re-architected all semantic design tokens (`primary`, `background`, `surface`, `apptext`, `border`, `status`) to use space-separated RGB channels `rgb(var(--...-rgb) / <alpha-value>)`.
+  - Defined the official **Obsidian Forest** dark palette in `:root` and `.dark` scopes:
+    - Background: `#0B1310` (Dark Obsidian Night Forest)
+    - Surface (Cards, Modals, Forms): `#13221C` (Elevated Forest Slate)
+    - Primary Accent: `#10B981` (Vibrant Emerald Glow, WCAG AAA compliant)
+    - Text Main: `#F3F7F5` (High-contrast bright text)
+    - Text Muted: `#9CAFA6` (Cool readable slate)
+    - Borders: `#203A2F` (Crisp emerald boundary)
+    - Status tints: Dark danger (`#3C1616`), dark success (`#0C3426`), dark warning (`#3F2A0A`).
+  - Maintained 100% backwards-compatibility for existing light mode hex values.
+- **Zero-FOUC Hydration & Theme Script (`src/app/layout.tsx`)**:
+  - Injected an inline synchronous script in `<head>` that executes prior to browser DOM rendering, evaluating `localStorage.getItem("moneycontrolr-theme")` and `window.matchMedia("(prefers-color-scheme: dark)")` to apply `.dark` immediately with zero visual flicker.
+  - Added `suppressHydrationWarning` to `<html>` to eliminate React SSR class hydration mismatch warnings.
+  - Configured `Viewport.themeColor` media queries to automatically tint browser address bars on mobile devices.
+- **Theme State Management & Provider (`src/components/theme/theme-provider.tsx`)**:
+  - Created `ThemeProvider` context and `useTheme` hook supporting `"light" | "dark" | "system"`.
+  - Synchronized changes to `localStorage` under key `moneycontrolr-theme`.
+  - Attached OS system color-scheme change listeners when `theme === "system"`.
+- **UI Theme Toggle Controls (`src/components/theme/theme-toggle.tsx`)**:
+  - Built 3 high-usability variants:
+    - `variant="icon"`: Sun/Moon button with rotation animation and accessibility tooltips.
+    - `variant="dropdown-item"`: Full-width interactive row with theme status for dropdowns and mobile menus.
+    - `variant="cards"`: High-fidelity visual cards for Settings with live mini-palette swatches and active status badges.
+- **Navbar & Settings Integration**:
+  - Embedded theme icon toggles in both desktop and mobile headers (`src/components/layout/navbar.tsx`).
+  - Added Theme & Appearance row in mobile navigation drawer.
+  - Integrated Theme switch action inside the 3-dots Quick Access dropdown.
+  - Added dedicated "Appearance & Theme" configuration section in `src/app/settings/page.tsx`.
+- **Automated Testing & Accessibility Contrast Verification (`tests/theme.test.ts`)**:
+  - Created automated test suite covering theme resolution state machines, local storage defensive parsing, and WCAG 2.1 relative luminance contrast ratios.
+  - Verified light mode text contrast >= 7:1 (AAA) and dark mode text contrast >= 12:1 (AAA).
+  - Wired into `package.json` `npm test`. All 7 test suites pass 100%.
+
+### 2. Why this approach was chosen
+- Using RGB CSS variable channels enables seamless support for Tailwind's opacity modifiers (e.g. `bg-surface/80`, `border-border/60`), ensuring existing cards, modals, and landing sections automatically adapt without touching hundreds of individual component files.
+- The Obsidian Forest palette preserves MoneyControlr's signature emerald identity while avoiding harsh pure blacks (`#000000`), reducing eye strain for late-night student budgeting sessions.
+- Pure client-side local storage storage avoids redundant database roundtrips and works instantly for both guest visitors and authenticated users.
+
+
 

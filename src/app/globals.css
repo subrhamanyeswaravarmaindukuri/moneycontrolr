@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,6 +6,29 @@
 
 @layer base {
   :root {
+    color-scheme: light;
+
+    /* Light Theme Color Channels (RGB space-separated for Tailwind alpha opacity) */
+    --background-rgb: 234 244 238; /* #EAF4EE Mint Mist */
+    --surface-rgb: 255 255 255; /* #FFFFFF Pure Surface */
+    --primary-rgb: 20 92 67; /* #145C43 Forest Emerald */
+    --primary-hover-rgb: 15 69 50; /* #0f4532 */
+    --primary-light-rgb: 225 239 231; /* #E1EFE7 Soft Sage */
+    --primary-subtle-rgb: 240 247 243; /* #F0F7F3 */
+    --text-rgb: 37 45 41; /* #252D29 Deep Charcoal */
+    --text-muted-rgb: 94 108 100; /* #5E6C64 */
+    --text-light-rgb: 140 155 147; /* #8C9B93 */
+    --border-rgb: 216 230 222; /* #D8E6DE */
+    --border-subtle-rgb: 233 241 236; /* #E9F1EC */
+
+    --status-danger-rgb: 217 45 32; /* #D92D20 */
+    --status-danger-light-rgb: 254 243 242; /* #FEF3F2 */
+    --status-success-rgb: 7 148 85; /* #079455 */
+    --status-success-light-rgb: 236 253 243; /* #ECFDF3 */
+    --status-warning-rgb: 220 104 3; /* #DC6803 */
+    --status-warning-light-rgb: 254 240 199; /* #FEF0C7 */
+
+    /* CSS variable fallback for non-Tailwind consumers */
     --background: #EAF4EE;
     --surface: #FFFFFF;
     --primary: #145C43;
@@ -16,18 +39,57 @@
     --border: #D8E6DE;
   }
 
+  .dark {
+    color-scheme: dark;
+
+    /* Dark Theme Color Channels: Obsidian Forest & Vibrant Emerald Glow */
+    --background-rgb: 11 19 16; /* #0B1310 Obsidian Night Forest */
+    --surface-rgb: 19 34 28; /* #13221C Elevated Forest Slate */
+    --primary-rgb: 16 185 129; /* #10B981 Vibrant High-Contrast Emerald */
+    --primary-hover-rgb: 5 150 105; /* #059669 */
+    --primary-light-rgb: 20 54 42; /* #14362A Deep Emerald Highlight */
+    --primary-subtle-rgb: 14 36 29; /* #0E241D */
+    --text-rgb: 243 247 245; /* #F3F7F5 High-Contrast Bright Text */
+    --text-muted-rgb: 156 175 166; /* #9CAFA6 Cool Readable Slate */
+    --text-light-rgb: 110 133 123; /* #6E857B */
+    --border-rgb: 32 58 47; /* #203A2F Crisp Boundary */
+    --border-subtle-rgb: 23 43 35; /* #172B23 */
+
+    --status-danger-rgb: 248 113 113; /* #F87171 High-Contrast Red */
+    --status-danger-light-rgb: 60 22 22; /* #3C1616 Dark Red Tint */
+    --status-success-rgb: 52 211 153; /* #34D399 High-Contrast Mint */
+    --status-success-light-rgb: 12 52 38; /* #0C3426 Dark Emerald Tint */
+    --status-warning-rgb: 251 191 36; /* #FBBF24 High-Contrast Amber */
+    --status-warning-light-rgb: 63 42 10; /* #3F2A0A Dark Amber Tint */
+
+    /* CSS variable fallback for dark mode */
+    --background: #0B1310;
+    --surface: #13221C;
+    --primary: #10B981;
+    --primary-hover: #059669;
+    --primary-light: #14362A;
+    --text: #F3F7F5;
+    --text-muted: #9CAFA6;
+    --border: #203A2F;
+  }
+
   * {
-    border-color: var(--border);
+    border-color: rgb(var(--border-rgb) / 1);
     -webkit-tap-highlight-color: transparent;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    background-color: var(--background);
-    color: var(--text);
+    background-color: rgb(var(--background-rgb) / 1);
+    color: rgb(var(--text-rgb) / 1);
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
 }

@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { type User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { BrandEmblem } from "./brand-logo";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import {
   Menu,
   X,
@@ -262,6 +263,9 @@ export function Navbar() {
                           );
                         })}
                       </div>
+                      <div className="pt-1.5 mt-1.5 border-t border-border">
+                        <ThemeToggle variant="dropdown-item" onSelect={() => setMoreMenuOpen(false)} />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -315,10 +319,15 @@ export function Navbar() {
               /* Hydration placeholder preventing flicker */
               <div className="w-24 h-9" />
             )}
+
+            {/* Desktop Theme Switcher */}
+            <ThemeToggle variant="icon" />
           </div>
 
           {/* Mobile Right Controls */}
           <div className="sm:hidden flex items-center gap-2">
+            <ThemeToggle variant="icon" />
+
             {!isLoadingAuth && isVerifiedUser && (
               <div className="relative">
                 <button
@@ -358,6 +367,9 @@ export function Navbar() {
                           </Link>
                         );
                       })}
+                    </div>
+                    <div className="pt-1.5 mt-1.5 border-t border-border">
+                      <ThemeToggle variant="dropdown-item" onSelect={() => setMoreMenuOpen(false)} />
                     </div>
                   </div>
                 )}
@@ -423,6 +435,14 @@ export function Navbar() {
               </div>
             </div>
           )}
+
+          {/* Mobile Theme Selection Row */}
+          <div className="pt-2 border-t border-border space-y-1">
+            <div className="px-1 text-[10px] font-extrabold uppercase tracking-wider text-apptext-muted">
+              Appearance &amp; Theme
+            </div>
+            <ThemeToggle variant="dropdown-item" onSelect={() => setMobileMenuOpen(false)} />
+          </div>
 
           <div className="pt-3 border-t border-border">
             {!isLoadingAuth && isVerifiedUser && user ? (
