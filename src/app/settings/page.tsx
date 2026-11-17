@@ -1,6 +1,9 @@
 import { Navbar } from "@/components/layout/navbar";
 import { requireVerifiedUser } from "@/lib/security/server-auth";
 import { AccountSecurityForms } from "@/components/settings/account-security-forms";
+import { CategoryManager } from "@/components/settings/category-manager";
+import { RecurringManager } from "@/components/settings/recurring-manager";
+import { getCategories, getRecurringExpenses } from "@/app/transactions/actions";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck } from "lucide-react";
 
@@ -13,6 +16,12 @@ export default async function SettingsPage({
 }) {
   const { user } = await requireVerifiedUser("/settings");
   const params = await searchParams;
+
+  const [categories, recurring] = await Promise.all([
+    getCategories(),
+    getRecurringExpenses(),
+  ]);
+
   const displayName =
     (user.user_metadata?.display_name as string | undefined) ||
     user.email?.split("@")[0] ||
@@ -23,12 +32,12 @@ export default async function SettingsPage({
       <Navbar />
 
       <main className="flex-1 py-8 sm:py-12 px-4 sm:px-8 lg:px-12 xl:px-16">
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-4xl mx-auto space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-surface border border-border rounded-card p-6 shadow-card">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl font-bold tracking-tight text-apptext">
-                  Account & Security
+                  Settings &amp; Preferences
                 </h1>
                 <Badge variant="success" className="text-[11px] font-semibold">
                   <ShieldCheck className="w-3.5 h-3.5 mr-1" />
@@ -41,6 +50,13 @@ export default async function SettingsPage({
             </div>
           </div>
 
+          {/* 1. Custom Spending & Income Categories */}
+          <CategoryManager initialCategories={categories} />
+
+          {/* 2. Recurring Monthly Bills & Fixed Commitments */}
+          <RecurringManager initialRecurring={recurring} categories={categories} />
+
+          {/* 3. Account Security (Password, Email Confirmation) */}
           <AccountSecurityForms
             currentEmail={user.email ?? ""}
             pendingNewEmail={user.new_email ?? null}

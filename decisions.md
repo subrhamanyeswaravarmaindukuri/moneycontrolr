@@ -366,3 +366,38 @@ This document tracks all meaningful architectural, engineering, and product deci
 - Standard Next.js `manifest.ts` requires no heavy external PWA libraries (like `next-pwa`) that often conflict with Next.js 15 Turbopack or App Router server actions.
 - Schema.org `FAQPage` markup directly aligns with Google's rich result guidelines for informational finance tools.
 
+---
+
+## ADR 0010: Custom Transaction Categories & Recurring Monthly Expenses Engine
+- **Date**: 2026-11-17
+- **Status**: Accepted / Implemented
+
+### 1. What was changed
+- **Database Schema & Migrations (`supabase/migrations/20261117000000_recurring_expenses.sql`)**:
+  - Leveraged existing `public.categories` table architecture (`user_id IS NULL` for protected system defaults, `user_id = auth.uid()` for user custom categories).
+  - Created idempotent `public.recurring_expenses` table with strict Row Level Security (RLS) policies gated by `private.is_email_verified()` and cascade deletion on user removal.
+  - Added check constraints on bounds: `amount > 0 and amount <= 100000000`, `due_day between 1 and 31`, `name length between 1 and 80`.
+- **Database Types (`src/types/database.types.ts`)**:
+  - Exported `RecurringExpense` interface and registered `recurring_expenses` under `Database['public']['Tables']`.
+- **Server Actions (`src/app/transactions/actions.ts`)**:
+  - Implemented `createCustomCategory(formData)`: Enforces trimmed name (1-60 chars), type ("expense" | "income"), icon, and color validation with case-insensitive duplicate checks and revalidation of all financial views.
+  - Implemented `deleteCustomCategory(categoryId)`: Enforces ownership (`user_id === user.id`), protects system defaults (`user_id === null`), and checks foreign key usage in transactions before deletion to prevent accidental orphaned data loss.
+  - Implemented `getRecurringExpenses()`: Queries recurring commitments with joined categories, fail-closed and gracefully returning `[]` if the table is pending migration.
+  - Implemented `createRecurringExpense(formData)` and `deleteRecurringExpense(id)`: Full CRUD for fixed monthly bills.
+  - Implemented `logRecurringExpenseAsTransaction(recurringId)`: 1-click execution that records a real expense transaction with today's date and `[Recurring Bill]` note.
+- **Frontend UI Integration**:
+  - Built `src/components/transactions/create-category-dialog.tsx`: Fast modal with 20+ curated student icons, 8 brand colors, live preview, and auto-selection.
+  - Upgraded `src/components/transactions/transaction-form.tsx`: Added `+ Custom` quick-add button in the category grid and expanded `ICON_MAP`.
+  - Built `src/components/settings/category-manager.tsx`: Visual category management in `/settings` with Expense/Income tabs and delete protections for system categories.
+  - Built `src/components/settings/recurring-manager.tsx`: Full dashboard card in `/settings` showing total monthly reserved commitments, due days, and 1-click "Log as Paid" action.
+  - Integrated both managers into `src/app/settings/page.tsx`.
+- **Integrity & Unit Testing (`tests/categories-and-recurring.test.ts`)**:
+  - Added unit test suite covering category keyword classification (Needs vs. Wants), name sanitization/bounds, system default deletion protection, and integer-paise recurring commitments math.
+  - Wired into `package.json` `npm test` script. All 6 test suites passed 100% with zero errors.
+
+### 2. Why this approach was chosen
+- Providing custom categories directly inside the transaction form via "+ Custom" ensures frictionless flow: a student logging a new purchase (e.g., "Gym" or "Hostel Mess") does not need to leave the transaction flow to create a category first.
+- Separating recurring expenses from baseline daily allowance avoids the classic student trap of spending discretionary money on days 1–15 and having zero funds left when rent or mess fees are due.
+- System default categories remain immutable to ensure core analytics and baseline reporting never break.
+
+

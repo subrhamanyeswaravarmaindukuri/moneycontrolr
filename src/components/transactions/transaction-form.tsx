@@ -37,8 +37,22 @@ import {
   AlertCircle,
   CheckCircle2,
   ArrowRight,
+  Plus,
+  Coffee,
+  Pizza,
+  Shirt,
+  Home,
+  Wifi,
+  Car,
+  Fuel,
+  Dumbbell,
+  Book,
+  Gamepad,
+  Gift,
+  Sparkles,
 } from "lucide-react";
 import { createTransaction, updateTransaction } from "@/app/transactions/actions";
+import { CreateCategoryDialog } from "./create-category-dialog";
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Utensils,
@@ -55,6 +69,18 @@ const ICON_MAP: Record<string, React.ElementType> = {
   Laptop,
   PlusCircle,
   HeartHandshake,
+  Coffee,
+  Pizza,
+  Shirt,
+  Home,
+  Wifi,
+  Car,
+  Fuel,
+  Dumbbell,
+  Book,
+  Gamepad,
+  Gift,
+  Sparkles,
 };
 
 const PAYMENT_SOURCES: { id: PaymentSource; label: string; icon: React.ElementType }[] = [
@@ -79,6 +105,9 @@ export function TransactionForm({
   const router = useRouter();
   const isEditing = Boolean(initialData);
 
+  const [categoryList, setCategoryList] = useState<Category[]>(categories);
+  const [isCreateCategoryOpen, setIsCreateCategoryOpen] = useState(false);
+
   const [type, setType] = useState<TransactionType>(initialData?.type || "expense");
   const [amount, setAmount] = useState<string>(initialData ? String(initialData.amount) : "");
   const [categoryId, setCategoryId] = useState<string>(initialData?.category_id || "");
@@ -91,8 +120,13 @@ export function TransactionForm({
   const submittingRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Sync categoryList with incoming prop updates if any
+  useEffect(() => {
+    setCategoryList(categories);
+  }, [categories]);
+
   // Filter categories by active transaction type
-  const filteredCategories = categories.filter((c) => c.type === type);
+  const filteredCategories = categoryList.filter((c) => c.type === type);
 
   // Keep categoryId synchronized cleanly inside effect instead of during render
   useEffect(() => {
@@ -101,6 +135,12 @@ export function TransactionForm({
       setCategoryId(filteredCategories[0].id);
     }
   }, [filteredCategories, categoryId]);
+
+  const handleCategoryCreated = (newCat: Category) => {
+    setCategoryList((prev) => [...prev, newCat]);
+    setType(newCat.type);
+    setCategoryId(newCat.id);
+  };
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -237,7 +277,28 @@ export function TransactionForm({
               </button>
             );
           })}
+
+          {/* Quick Add Custom Category Button */}
+          <button
+            type="button"
+            onClick={() => setIsCreateCategoryOpen(true)}
+            className="p-3 rounded-xl border border-dashed border-primary/40 text-left flex items-center gap-2.5 transition-all text-xs bg-primary-light/30 hover:bg-primary-light/60 text-primary font-bold group"
+            title="Create a new custom category"
+          >
+            <div className="w-7 h-7 rounded-lg bg-primary text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <Plus className="w-4 h-4" />
+            </div>
+            <span className="truncate">+ Custom</span>
+          </button>
         </div>
+
+        {/* Modal for creating custom category */}
+        <CreateCategoryDialog
+          isOpen={isCreateCategoryOpen}
+          onClose={() => setIsCreateCategoryOpen(false)}
+          defaultType={type}
+          onCategoryCreated={handleCategoryCreated}
+        />
       </div>
 
       {/* 4. Payment Source Pills */}

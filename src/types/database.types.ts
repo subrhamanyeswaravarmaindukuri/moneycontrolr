@@ -70,6 +70,21 @@ export interface Transaction {
   category?: Category;
 }
 
+export interface RecurringExpense {
+  id: string;
+  user_id: string;
+  category_id: string;
+  name: string;
+  amount: number;
+  payment_source: PaymentSource;
+  due_day: number; // 1-31
+  is_active: boolean;
+  note: string | null;
+  created_at: string;
+  updated_at: string;
+  category?: Category;
+}
+
 export type GenericRelationship = {
   foreignKeyName: string;
   columns: string[];
@@ -175,6 +190,36 @@ export type Database = {
           type?: TransactionType;
           payment_source?: PaymentSource;
           transaction_date?: string;
+          note?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: GenericRelationship[];
+      };
+      recurring_expenses: {
+        Row: RecurringExpense;
+        Insert: {
+          id?: string;
+          user_id: string;
+          category_id: string;
+          name: string;
+          amount: number;
+          payment_source?: PaymentSource;
+          due_day?: number;
+          is_active?: boolean;
+          note?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          category_id?: string;
+          name?: string;
+          amount?: number;
+          payment_source?: PaymentSource;
+          due_day?: number;
+          is_active?: boolean;
           note?: string | null;
           created_at?: string;
           updated_at?: string;
