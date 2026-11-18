@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 
 export const SITE_NAME = "MoneyControlr";
-export const SITE_TAGLINE = "Know Your Money. Control Your Day.";
-export const HOMEPAGE_TITLE = "MoneyControlr – Know Your Money. Control Your Day.";
+export const SITE_TAGLINE = "Student Expense Tracker & Budget Planner";
+export const HOMEPAGE_TITLE = "MoneyControlr – Student Expense Tracker & Budget Planner";
 export const HOMEPAGE_DESCRIPTION =
-  "Take control of your money with MoneyControlr. Track expenses, manage your daily allowance, understand your spending and stay within your monthly budget.";
+  "Track college expenses, manage your daily allowance, plan your budget and understand where your money goes. Stay in control of your spending with MoneyControlr.";
 
 /**
  * Returns the verified production site URL from NEXT_PUBLIC_SITE_URL.
@@ -119,7 +119,7 @@ export function buildPublicMetadata({
                 url: ogImageUrl,
                 width: 1024,
                 height: 745,
-                alt: "MoneyControlr — Know Your Money. Control Your Day.",
+                alt: "MoneyControlr — Student Expense Tracker & Budget Planner",
               },
             ],
           }

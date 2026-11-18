@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "MoneyControlr — Daily Allowance & Expense Tracker",
     short_name: "MoneyControlr",
     description:
-      "Take control of your money. Calculate daily safe-to-spend limits, track college expenses, and stay on budget.",
+      "Track college expenses, manage your daily allowance, plan your budget and understand where your money goes. Stay in control of your spending with MoneyControlr.",
     start_url: "/",
     display: "standalone",
     background_color: "#EAF4EE",
@@ -13,12 +13,17 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "portrait",
     icons: [
       {
-        src: "/icon.png",
+        src: "/favicon-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        src: "/icon-512x512.png",
         sizes: "512x512",
         type: "image/png",
       },
       {
-        src: "/apple-icon.png",
+        src: "/apple-touch-icon.png",
         sizes: "180x180",
         type: "image/png",
       },

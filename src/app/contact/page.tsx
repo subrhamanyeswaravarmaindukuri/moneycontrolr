@@ -15,7 +15,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-const PAGE_TITLE = "Contact";
+const PAGE_TITLE = "Contact MoneyControlr – Student Expense Tracker Support";
 const PAGE_DESCRIPTION =
   "Get in touch with MoneyControlr for questions about daily budgeting, account verification, bug reports, or student feedback.";
 
@@ -23,6 +23,7 @@ export const metadata: Metadata = buildPublicMetadata({
   title: PAGE_TITLE,
   description: PAGE_DESCRIPTION,
   path: "/contact",
+  useAbsoluteTitle: true,
 });
 
 function hasConfiguredEmailService(): boolean {

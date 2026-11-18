@@ -27,6 +27,12 @@ export function Footer() {
             Calculator
           </Link>
           <Link
+            href="/guide"
+            className="text-xs sm:text-sm font-semibold text-apptext-muted hover:text-primary transition-colors"
+          >
+            Guide
+          </Link>
+          <Link
             href="/about"
             className="text-xs sm:text-sm font-semibold text-apptext-muted hover:text-primary transition-colors"
           >

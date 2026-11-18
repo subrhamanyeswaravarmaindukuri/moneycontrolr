@@ -22,7 +22,7 @@ import {
   Zap,
 } from "lucide-react";
 
-const PAGE_TITLE = "Student Daily Allowance & 50/30/20 Budget Calculator";
+const PAGE_TITLE = "Student Daily Allowance Calculator – MoneyControlr";
 const PAGE_DESCRIPTION =
   "Calculate your daily safe-to-spend limit, plan your 50/30/20 college budget, and keep your monthly allowance from vanishing before month-end.";
 
@@ -30,6 +30,7 @@ export const metadata: Metadata = buildPublicMetadata({
   title: PAGE_TITLE,
   description: PAGE_DESCRIPTION,
   path: "/calculator",
+  useAbsoluteTitle: true,
 });
 
 const FAQ_ITEMS: readonly FaqItem[] = [

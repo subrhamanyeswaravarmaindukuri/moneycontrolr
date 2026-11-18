@@ -447,5 +447,57 @@ This document tracks all meaningful architectural, engineering, and product deci
 - The Obsidian Forest palette preserves MoneyControlr's signature emerald identity while avoiding harsh pure blacks (`#000000`), reducing eye strain for late-night student budgeting sessions.
 - Pure client-side local storage storage avoids redundant database roundtrips and works instantly for both guest visitors and authenticated users.
 
+---
+
+## ADR 0012: Comprehensive SEO, Multi-Resolution Favicon Ecosystem, WebApplication Structured Data & Student Financial Handbook
+- **Date**: 2026-11-18
+- **Status**: Accepted / Implemented
+
+### 1. What was changed
+- **Favicon Ecosystem (Phase 2)**:
+  - Generated Googlebot-compliant multi-resolution favicons with high bicubic sampling:
+    - `public/favicon-48x48.png` (48×48px, primary Googlebot favicon standard)
+    - `public/favicon-96x96.png` (96×96px, high-DPI desktop search)
+    - `public/favicon-192x192.png` (192×192px, Android Chrome & PWA)
+    - `public/apple-touch-icon.png` (180×180px, iOS Safari standard)
+    - `public/icon-512x512.png` (512×512px, high-res PWA icon)
+    - Retained original `public/favicon.ico` (48×48px).
+  - Explicitly declared all icon sizes and relationships in `src/app/layout.tsx` and `src/app/manifest.ts`.
+- **Complete SEO Metadata & Exact Titles (Phase 3)**:
+  - Homepage (`/`): `MoneyControlr – Student Expense Tracker & Budget Planner`
+  - Features (`/features`): `MoneyControlr Features – Student Expense Tracking & Budget Tools`
+  - Calculator (`/calculator`): `Student Daily Allowance Calculator – MoneyControlr`
+  - About (`/about`): `About MoneyControlr – Built for Student Finance`
+  - Contact (`/contact`): `Contact MoneyControlr – Student Expense Tracker Support`
+  - Updated global site tagline and homepage description in `src/lib/seo/metadata.ts`.
+- **Enhanced Schema.org Structured Data (Phase 4)**:
+  - Added `WebApplication` entity (`applicationCategory: "FinanceApplication"`, `operatingSystem: "All"`, `offers: { price: "0", priceCurrency: "INR" }`).
+  - Added `BreadcrumbList` on all subpages to assist Google in generating structured breadcrumbs and sitelinks.
+  - Retained verified `Organization`, `WebSite` with `hasPart`, and Google-compliant `FAQPage` entities.
+- **Website Structure & Student Financial Guide (Phase 5)**:
+  - Built comprehensive public handbook at `/guide` (`src/app/guide/page.tsx`):
+    - Managing a college daily allowance vs. lump sums.
+    - Dynamic daily limit algorithm (`Remaining Discretionary / Remaining Days`).
+    - Allowance rollover mechanics for both savings and deficits.
+    - Tracking high-frequency UPI and cash micro-spends.
+    - Applying the student 50/30/20 budgeting framework.
+    - Reserving recurring bills before discretionary calculations.
+    - Expandable FAQ accordion wired to Schema.org `FAQPage`.
+  - Added `/guide` to public navigation in `src/components/layout/navbar.tsx` and `src/components/layout/footer.tsx`.
+- **Technical SEO Hardening (Phase 6)**:
+  - Removed `/login` from `src/app/sitemap.ts`, eliminating the search engine conflict where disallowed URLs appeared in the XML sitemap.
+  - Added `/guide` to `sitemap.ts` with priority `0.85` and `robots.ts` allowlist.
+  - Verified canonicals, Open Graph tags, and heading hierarchies across all 6 public pages.
+- **Automated Verification (Phase 10)**:
+  - Updated `tests/seo.test.ts` to assert disk existence of all favicon assets, sitemap cleanliness, schema graph structure, and contact form edge cases.
+  - Ran `npm test` across all 7 test suites (100% passing).
+  - Ran `npx tsc --noEmit` (0 TypeScript compilation errors).
+
+### 2. Why this approach was chosen
+- Providing Googlebot with exact 48px, 96px, and 192px PNG assets eliminates favicon fallback delays in mobile and desktop SERP results.
+- The in-depth `/guide` handbook provides high-intent, original educational content tailored to college students, establishing topical authority in Google's financial index and answering all key product identity queries for AI Overviews.
+- Strict sitemap hygiene ensures search crawlers only expend crawl budget on indexable, canonical public pages.
+
+
 
 

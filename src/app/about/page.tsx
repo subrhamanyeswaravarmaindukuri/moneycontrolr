@@ -16,14 +16,15 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-const PAGE_TITLE = "About";
+const PAGE_TITLE = "About MoneyControlr – Built for Student Finance";
 const PAGE_DESCRIPTION =
-  "Learn why MoneyControlr was built for college students and everyday budgeters: turn a monthly allowance into calm daily financial clarity.";
+  "Learn why MoneyControlr was built for college students: turn a monthly allowance into calm daily financial clarity with dynamic limits.";
 
 export const metadata: Metadata = buildPublicMetadata({
   title: PAGE_TITLE,
   description: PAGE_DESCRIPTION,
   path: "/about",
+  useAbsoluteTitle: true,
 });
 
 const PRINCIPLES = [

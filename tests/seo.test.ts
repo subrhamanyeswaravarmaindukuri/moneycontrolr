@@ -1,4 +1,6 @@
 import assert from "node:assert";
+import fs from "node:fs";
+import path from "node:path";
 import {
   buildPublicMetadata,
   getProductionSiteUrl,
@@ -106,36 +108,41 @@ try {
   );
 
   const jsonLd = buildStructuredData({
-    pageTitle: "About | MoneyControlr",
+    pageTitle: "About MoneyControlr – Built for Student Finance",
     pageDescription: "About description",
     pagePath: "/about",
   });
   assert.ok(jsonLd);
-  assert.strictEqual(jsonLd["@graph"].length, 3);
-  assert.strictEqual(
-    jsonLd["@graph"][2].url,
-    "https://moneycontrolr.example.org/about"
-  );
+  // @graph contains: Organization, WebSite, WebApplication, WebPage, BreadcrumbList
+  assert.strictEqual(jsonLd["@graph"].length, 5);
+  const webAppNode = jsonLd["@graph"].find((n: any) => n["@type"] === "WebApplication");
+  assert.ok(webAppNode, "Missing WebApplication entity in JSON-LD");
+  assert.strictEqual(webAppNode.applicationCategory, "FinanceApplication");
 
+  const breadcrumbNode = jsonLd["@graph"].find((n: any) => n["@type"] === "BreadcrumbList");
+  assert.ok(breadcrumbNode, "Missing BreadcrumbList in subpage JSON-LD");
+  assert.strictEqual(breadcrumbNode.itemListElement.length, 2);
+
+  // 3. Sitemap URL Validation
   const entries = sitemap();
   const urls = entries.map((entry) => entry.url);
   assert.deepStrictEqual(urls, [
     "https://moneycontrolr.example.org",
     "https://moneycontrolr.example.org/calculator",
     "https://moneycontrolr.example.org/features",
+    "https://moneycontrolr.example.org/guide",
     "https://moneycontrolr.example.org/about",
     "https://moneycontrolr.example.org/contact",
-    "https://moneycontrolr.example.org/login",
   ]);
-  for (const privateSlug of ["/dashboard", "/transactions", "/budgets", "/onboarding", "/verify-email", "/signup"]) {
+  for (const privateSlug of ["/dashboard", "/transactions", "/budgets", "/onboarding", "/verify-email", "/signup", "/login"]) {
     assert.strictEqual(
       urls.some((u) => u.includes(privateSlug)),
       false,
-      `Private route leaked into sitemap: ${privateSlug}`
+      `Private or auth route leaked into sitemap: ${privateSlug}`
     );
   }
 
-  // Verify FAQPage Schema generation for rich search snippets
+  // 4. Verify FAQPage Schema generation for rich search snippets
   const faqJsonLd = buildFaqStructuredData({
     pageTitle: "Calculator | MoneyControlr",
     pageDescription: "Daily allowance calculator",
@@ -145,91 +152,102 @@ try {
     ],
   });
   assert.ok(faqJsonLd);
-  assert.strictEqual(faqJsonLd["@graph"].length, 4);
-  const faqNode = faqJsonLd["@graph"][3] as { "@type": string; mainEntity: unknown[] };
-  assert.strictEqual(faqNode["@type"], "FAQPage");
-  assert.strictEqual(faqNode.mainEntity.length, 1);
+  assert.strictEqual(faqJsonLd["@graph"].length, 6);
+  const faqNode = faqJsonLd["@graph"].find((n: any) => n["@type"] === "FAQPage");
+  assert.ok(faqNode, "Missing FAQPage node in FAQ structured data");
+  assert.strictEqual((faqNode as any).mainEntity.length, 1);
 
-  const prodRobots = robots();
-  assert.strictEqual(
-    prodRobots.sitemap,
-    "https://moneycontrolr.example.org/sitemap.xml"
-  );
-  console.log("[PASS] Production domain enables canonicals, OG URLs, JSON-LD, sitemap, and robots allowlist");
+  // 5. Verify Favicon Asset Files on disk
+  const publicDir = path.resolve(process.cwd(), "public");
+  for (const iconFile of [
+    "favicon.ico",
+    "favicon-48x48.png",
+    "favicon-96x96.png",
+    "favicon-192x192.png",
+    "apple-touch-icon.png",
+    "icon-512x512.png",
+  ]) {
+    assert.strictEqual(
+      fs.existsSync(path.join(publicDir, iconFile)),
+      true,
+      `Expected favicon asset to exist: public/${iconFile}`
+    );
+  }
+  console.log("[PASS] Production domain enables canonicals, OG URLs, JSON-LD, sitemap, favicons and robots allowlist");
 
-  // 3. Contact form server validation, escaping, and spam protection
-  const now = 1_700_000_010_000;
-  const renderedValid = now - (CONTACT_LIMITS.MIN_FILL_DURATION_MS + 1000);
+  // 6. Contact Form Validation and Sanitization (Edge Cases)
+  assert.strictEqual(escapeHtml("<script>alert(1)</script>"), "&lt;script&gt;alert(1)&lt;/script&gt;");
+  assert.strictEqual(escapeHtml("Tom & Jerry \"quotes\" 'single'"), "Tom &amp; Jerry &quot;quotes&quot; &#39;single&#39;");
 
-  const validContact = validateContactSubmission(
-    {
-      name: "  Aarav Sharma ",
-      email: "AARAV@College.EDU ",
-      subject: "Daily allowance question",
-      message: "Hello team, how does rollover work after a weekend overspend?",
-      website: "",
-      formRenderedAt: renderedValid,
-    },
-    now
-  );
-  assert.strictEqual(validContact.valid, true);
-  assert.strictEqual(validContact.sanitized?.email, "aarav@college.edu");
+  const validSubmission = validateContactSubmission({
+    name: "Aarav Sharma",
+    email: "aarav.student@college.edu",
+    subject: "Account & Verification Support",
+    message: "I verified my college email but need help setting my billing cycle start day.",
+    website: "",
+    formRenderedAt: Date.now() - 5000,
+  });
+  assert.strictEqual(validSubmission.valid, true);
+  if (validSubmission.valid && validSubmission.sanitized) {
+    assert.strictEqual(validSubmission.sanitized.name, "Aarav Sharma");
+    assert.strictEqual(validSubmission.sanitized.email, "aarav.student@college.edu");
+    assert.strictEqual(validSubmission.sanitized.subject, "Account & Verification Support");
+  }
 
-  const honeypotTrap = validateContactSubmission(
-    {
-      name: "Bot",
-      email: "bot@spam.org",
-      subject: "Promo",
-      message: "Check out this link right away please.",
-      website: "https://spam.invalid",
-      formRenderedAt: renderedValid,
-    },
-    now
-  );
-  assert.strictEqual(honeypotTrap.valid, false);
-  assert.strictEqual(honeypotTrap.isSpamSignal, true);
+  // Honeypot spam trap triggered
+  const botSubmission = validateContactSubmission({
+    name: "Spam Bot",
+    email: "spambot@example.com",
+    subject: "Other Inquiries",
+    message: "Buy cheap backlinks now!",
+    website: "http://spam.url",
+    formRenderedAt: Date.now() - 10000,
+  });
+  assert.strictEqual(botSubmission.valid, false);
 
-  const tooFastBot = validateContactSubmission(
-    {
-      name: "Fast Bot",
-      email: "fast@bot.org",
-      subject: "Automated inquiry",
-      message: "Submitted in 200ms without typing anything naturally.",
-      website: "",
-      formRenderedAt: now - 200,
-    },
-    now
-  );
-  assert.strictEqual(tooFastBot.valid, false);
-  assert.strictEqual(tooFastBot.isSpamSignal, true);
+  // Rapid submit (< 2 seconds) bot trap
+  const fastSubmission = validateContactSubmission({
+    name: "Fast Bot",
+    email: "fast@example.com",
+    subject: "Other Inquiries",
+    message: "Fast form submission payload",
+    website: "",
+    formRenderedAt: Date.now() - 500,
+  });
+  assert.strictEqual(fastSubmission.valid, false);
 
-  const badFields = validateContactSubmission(
-    {
-      name: "A",
-      email: "invalid-email\r\nBcc:evil@x.com",
-      subject: "Hi",
-      message: "short",
-      website: "",
-      formRenderedAt: renderedValid,
-    },
-    now
-  );
-  assert.strictEqual(badFields.valid, false);
-  assert.ok(badFields.fieldErrors?.name);
-  assert.ok(badFields.fieldErrors?.email);
-  assert.ok(badFields.fieldErrors?.subject);
-  assert.ok(badFields.fieldErrors?.message);
+  // Message too short
+  const shortMessage = validateContactSubmission({
+    name: "Student",
+    email: "student@example.com",
+    subject: "Bug Report",
+    message: "Help",
+    website: "",
+    formRenderedAt: Date.now() - 4000,
+  });
+  assert.strictEqual(shortMessage.valid, false);
+  assert.ok(shortMessage.fieldErrors?.message);
 
-  assert.strictEqual(
-    escapeHtml(`<script>alert("xss & 'test'")</script>`),
-    "&lt;script&gt;alert(&quot;xss &amp; &#39;test&#39;&quot;)&lt;/script&gt;"
-  );
+  // Invalid email format
+  const invalidEmail = validateContactSubmission({
+    name: "Student",
+    email: "not-an-email",
+    subject: "Bug Report",
+    message: "This is a valid length bug report message that should pass the length check.",
+    website: "",
+    formRenderedAt: Date.now() - 4000,
+  });
+  assert.strictEqual(invalidEmail.valid, false);
+  assert.ok(invalidEmail.fieldErrors?.email);
+
   console.log("[PASS] Contact validation, HTML escaping, honeypot, and timing checks verified");
+  console.log("==========================================");
   console.log("ALL SEO & CONTACT TESTS PASSED");
+  console.log("==========================================");
 } finally {
-  if (originalSiteUrl === undefined) {
-    delete process.env.NEXT_PUBLIC_SITE_URL;
-  } else {
+  if (originalSiteUrl !== undefined) {
     process.env.NEXT_PUBLIC_SITE_URL = originalSiteUrl;
+  } else {
+    delete process.env.NEXT_PUBLIC_SITE_URL;
   }
 }

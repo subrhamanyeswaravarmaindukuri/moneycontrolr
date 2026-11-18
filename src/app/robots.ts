@@ -4,7 +4,7 @@ import { getProductionSiteUrl } from "../lib/seo/metadata.ts";
 /**
  * Generates /robots.txt dynamically.
  * - While no verified production domain is configured, blocks indexing to protect preview/dev environments.
- * - Once NEXT_PUBLIC_SITE_URL is configured, permits crawling of public pages while disallowing private user routes.
+ * - Once NEXT_PUBLIC_SITE_URL is configured, permits crawling of high-value public pages while disallowing private and utility routes.
  * Note: Authentication & authorization are always enforced separately by middleware and server actions.
  */
 export default function robots(): MetadataRoute.Robots {
@@ -22,7 +22,7 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: ["/", "/features", "/calculator", "/about", "/contact", "/login"],
+      allow: ["/", "/features", "/calculator", "/guide", "/about", "/contact"],
       disallow: [
         "/dashboard",
         "/transactions",
@@ -33,6 +33,7 @@ export default function robots(): MetadataRoute.Robots {
         "/forgot-password",
         "/reset-password",
         "/auth/",
+        "/login",
         "/signup",
       ],
     },

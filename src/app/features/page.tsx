@@ -21,14 +21,15 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-const PAGE_TITLE = "Features";
+const PAGE_TITLE = "MoneyControlr Features – Student Expense Tracking & Budget Tools";
 const PAGE_DESCRIPTION =
-  "Explore implemented MoneyControlr features: dynamic daily safe-to-spend limits, student onboarding, 50/30/20 analytics, CSV exports, and verified Supabase security.";
+  "Explore MoneyControlr features: dynamic daily safe-to-spend limits, student budget onboarding, 50/30/20 breakdown, recurring monthly bills, and verified privacy.";
 
 export const metadata: Metadata = buildPublicMetadata({
   title: PAGE_TITLE,
   description: PAGE_DESCRIPTION,
   path: "/features",
+  useAbsoluteTitle: true,
 });
 
 const IMPLEMENTED_FEATURES = [

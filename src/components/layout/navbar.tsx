@@ -21,6 +21,7 @@ import {
   HelpCircle,
   Mail,
   Compass,
+  BookOpen,
 } from "lucide-react";
 
 const PUBLIC_RESOURCE_LINKS = [
@@ -35,6 +36,12 @@ const PUBLIC_RESOURCE_LINKS = [
     label: "Features",
     desc: "Dynamic limits, engine & security",
     icon: Sparkles,
+  },
+  {
+    href: "/guide",
+    label: "Student Guide",
+    desc: "Handbook on allowance & budgeting",
+    icon: BookOpen,
   },
   {
     href: "/about",
@@ -162,6 +169,7 @@ export function Navbar() {
     : [
         { href: "/features", label: "Features" },
         { href: "/calculator", label: "Calculator" },
+        { href: "/guide", label: "Guide" },
         { href: "/about", label: "About" },
         { href: "/contact", label: "Contact" },
       ];
