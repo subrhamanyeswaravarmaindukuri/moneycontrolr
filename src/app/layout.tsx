@@ -68,7 +68,7 @@ export const metadata: Metadata = {
               url: `${productionUrl}/images/moneycontrolr-logo.jpg`,
               width: 1024,
               height: 745,
-              alt: "MoneyControlr — Know Your Money. Control Your Day.",
+              alt: "MoneyControlr — Student Expense Tracker & Budget Planner",
             },
           ],
         }

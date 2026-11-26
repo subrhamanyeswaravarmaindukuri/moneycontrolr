@@ -43,7 +43,7 @@ export default function SignupPage() {
             <BrandEmblem size="lg" className="border-white/25" />
             <div>
               <span className="text-xl font-bold tracking-tight text-white">MoneyControlr</span>
-              <p className="text-xs text-white/70 font-medium">Know your money. Control your day.</p>
+              <p className="text-xs text-white/70 font-medium">Student Expense Tracker &amp; Budget Planner</p>
             </div>
           </Link>
         </div>
@@ -115,7 +115,7 @@ export default function SignupPage() {
               <BrandEmblem size="md" />
               <span className="text-xl font-bold tracking-tight text-primary">MoneyControlr</span>
             </Link>
-            <p className="text-xs text-apptext-muted font-medium">Know your money. Control your day.</p>
+            <p className="text-xs text-apptext-muted font-medium">Student Expense Tracker &amp; Budget Planner</p>
           </div>
 
           {/* Form Card */}

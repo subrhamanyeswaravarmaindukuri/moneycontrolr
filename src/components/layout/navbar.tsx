@@ -191,7 +191,7 @@ export function Navbar() {
                 </span>
               </div>
               <p className="text-[11px] text-apptext-muted hidden sm:block font-medium">
-                Know your money. Control your day.
+                Student Expense Tracker &amp; Budget Planner
               </p>
             </div>
           </Link>

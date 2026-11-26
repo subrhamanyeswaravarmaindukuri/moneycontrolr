@@ -9,7 +9,7 @@ export function Footer() {
           <BrandEmblem size="sm" className="group-hover:scale-105 transition-transform" />
           <div>
             <span className="font-bold text-sm text-apptext">MoneyControlr</span>
-            <p className="text-[11px] text-apptext-light">Know your money. Control your day.</p>
+            <p className="text-[11px] text-apptext-light">Student Expense Tracker &amp; Budget Planner</p>
           </div>
         </Link>
 
