@@ -187,7 +187,7 @@ export function Navbar() {
                   MoneyControlr
                 </span>
                 <span className="hidden sm:inline-block text-[10px] font-semibold uppercase tracking-wider bg-primary-light text-primary px-2 py-0.5 rounded-full">
-                  Fintech
+                  Student App
                 </span>
               </div>
               <p className="text-[11px] text-apptext-muted hidden sm:block font-medium">

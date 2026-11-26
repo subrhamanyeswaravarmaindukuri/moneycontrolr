@@ -40,6 +40,7 @@ export function buildStructuredData({
       "@id": `${siteUrl}/#organization`,
       name: SITE_NAME,
       url: siteUrl,
+      disambiguatingDescription: "Independent college student daily allowance calculator and expense budgeting web application. Not affiliated with stock trading, mutual funds, or Moneycontrol.com.",
       logo: {
         "@type": "ImageObject",
         url: `${siteUrl}/images/moneycontrolr-logo.jpg`,
@@ -54,6 +55,7 @@ export function buildStructuredData({
       url: siteUrl,
       name: SITE_NAME,
       description: HOMEPAGE_DESCRIPTION,
+      disambiguatingDescription: "Independent college student daily allowance calculator and personal finance app. Not affiliated with Moneycontrol.com.",
       publisher: {
         "@id": `${siteUrl}/#organization`,
       },
@@ -100,6 +102,7 @@ export function buildStructuredData({
       operatingSystem: "All",
       browserRequirements: "Requires JavaScript. Requires HTML5.",
       description: HOMEPAGE_DESCRIPTION,
+      disambiguatingDescription: "Independent college student daily allowance calculator and expense budgeting web application. Not affiliated with stock trading, securities or Moneycontrol.com.",
       offers: {
         "@type": "Offer",
         price: "0",

@@ -57,12 +57,17 @@ export function Footer() {
             Get Started
           </Link>
         </nav>
+      </div>
 
-        <p className="text-center md:text-right">
+      {/* Trust & Independence Disclaimer */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 pt-6 mt-6 border-t border-border/60 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-apptext-muted leading-relaxed">
+        <p className="text-center md:text-left max-w-3xl">
+          <strong className="text-apptext">Independence Disclaimer:</strong> MoneyControlr is an independent student budgeting and expense tracking tool. We are not affiliated with, endorsed by, or connected to Moneycontrol.com or Network18. We do not provide stock trading, demat accounts, mutual funds, or financial investment advice. All expense tracking is 100% manual.
+        </p>
+        <p className="text-center md:text-right shrink-0">
           © 2026 MoneyControlr. Built for college students everywhere.
         </p>
       </div>
     </footer>
   );
 }
-

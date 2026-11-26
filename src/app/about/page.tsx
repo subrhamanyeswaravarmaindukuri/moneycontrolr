@@ -48,7 +48,7 @@ const PRINCIPLES = [
   },
   {
     icon: Compass,
-    title: "Calm Fintech Clarity",
+    title: "Calm Budgeting Clarity",
     description:
       "No noisy feeds, upsells, or bloated spreadsheets—just focused daily metrics, 50/30/20 Needs-Wants-Savings visibility, weekly pace checks, and clean CSV portability whenever you want offline copies.",
   },
@@ -135,6 +135,37 @@ export default function AboutPage() {
                   </Card>
                 );
               })}
+            </div>
+          </div>
+        </section>
+
+        {/* Independence & Security Commitment */}
+        <section className="py-12 px-4 sm:px-8 lg:px-12 xl:px-16 border-t border-border/80">
+          <div className="max-w-5xl mx-auto rounded-card border border-border bg-surface p-6 sm:p-8 space-y-4 shadow-xs">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-primary-light text-primary flex items-center justify-center font-bold">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <h2 className="text-lg sm:text-xl font-bold text-apptext tracking-tight">
+                Independent Platform &amp; Privacy Commitment
+              </h2>
+            </div>
+            <p className="text-xs sm:text-sm text-apptext-muted leading-relaxed">
+              <strong>MoneyControlr</strong> is an independent personal finance project built specifically for college students managing a monthly allowance. We have <strong>no affiliation, partnership, or connection</strong> with Moneycontrol.com, Network18, or any commercial securities trading platform.
+            </p>
+            <div className="grid sm:grid-cols-3 gap-3 pt-2 text-xs text-apptext-muted">
+              <div className="p-3 rounded-xl bg-background border border-border space-y-1">
+                <span className="font-bold text-apptext block">Zero Investment Products</span>
+                <span>We do not offer demat accounts, stock tips, mutual funds, or trading services.</span>
+              </div>
+              <div className="p-3 rounded-xl bg-background border border-border space-y-1">
+                <span className="font-bold text-apptext block">100% Manual Tracking</span>
+                <span>We never ask for bank accounts, net-banking passwords, or UPI PINs.</span>
+              </div>
+              <div className="p-3 rounded-xl bg-background border border-border space-y-1">
+                <span className="font-bold text-apptext block">Data Protection</span>
+                <span>All budget records are strictly isolated via PostgreSQL Row-Level Security.</span>
+              </div>
             </div>
           </div>
         </section>

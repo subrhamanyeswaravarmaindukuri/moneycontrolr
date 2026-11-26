@@ -498,6 +498,36 @@ This document tracks all meaningful architectural, engineering, and product deci
 - The in-depth `/guide` handbook provides high-intent, original educational content tailored to college students, establishing topical authority in Google's financial index and answering all key product identity queries for AI Overviews.
 - Strict sitemap hygiene ensures search crawlers only expend crawl budget on indexable, canonical public pages.
 
+---
+
+## ADR 0013: Domain Trust Signals, AI Disambiguation & Independence Disclaimers
+- **Date**: 2026-11-26
+- **Status**: Accepted / Implemented
+
+### 1. What was changed
+- **Header Badge Reframing (`src/components/layout/navbar.tsx`, `src/app/(auth)/signup/page.tsx`)**:
+  - Replaced ambiguous `FINTECH` badge next to the logo with `Student App`.
+  - Replaced `Fintech For Students` badge with `Budgeting For Students`.
+  - Prevents automated AI heuristic bots from categorizing MoneyControlr as an investment/trading platform.
+- **Universal Independence Disclaimers (`src/components/layout/footer.tsx`, `src/app/about/page.tsx`)**:
+  - Embedded prominent legal and technical independence disclaimers in the site footer:
+    *"MoneyControlr is an independent student budgeting and expense tracking tool. We are not affiliated with, endorsed by, or connected to Moneycontrol.com or Network18. We do not provide stock trading, demat accounts, mutual funds, or financial investment advice. All expense tracking is 100% manual."*
+  - Added dedicated "Independent Platform & Privacy Commitment" card on the `/about` page highlighting zero investment products, manual tracking, and PostgreSQL RLS security.
+- **Schema.org Knowledge Graph Disambiguation (`src/lib/seo/structured-data.ts`)**:
+  - Injected `disambiguatingDescription` into `Organization`, `WebSite`, and `WebApplication` Schema entities:
+    *"Independent college student daily allowance calculator and expense budgeting web application. Not affiliated with stock trading, securities or Moneycontrol.com."*
+  - Explicitly instructs Googlebot, Bingbot, and AI LLM search crawlers to disambiguate MoneyControlr as an independent student personal finance entity.
+- **Explicit Anti-Impersonation FAQs (`src/app/guide/page.tsx`, `src/app/calculator/page.tsx`)**:
+  - Added clear Q&A answering *"Is MoneyControlr affiliated with Moneycontrol.com or any investment trading service?"* in both the Guide handbook and the Calculator FAQ sections.
+- **Automated Verification**:
+  - `npm test`: 100% pass across all 7 test suites.
+  - `npx tsc --noEmit`: 0 TypeScript errors.
+
+### 2. Why this approach was chosen
+- Automated AI scanners (e.g. LLM URL evaluation heuristics) evaluate newly discovered domains using string matching (`moneycontrol` + `r`). Explicit on-page independence declarations, Schema disambiguation tags, and eliminating commercial "fintech" keywords provide undeniable proof of independent, non-impersonating operation.
+- Clarifying that MoneyControlr offers no stock tips, demat accounts, or bank credentials permanently insulates the brand from SEBI/Network18 scam advisories.
+
+
 
 
 

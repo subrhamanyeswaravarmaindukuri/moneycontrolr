@@ -64,6 +64,11 @@ const FAQ_ITEMS: readonly FaqItem[] = [
     answer:
       "MoneyControlr runs on Supabase with strict Row Level Security (RLS) policies at the database engine level. Every financial row is cryptographically isolated to your verified account. We do not sell user data, and your calculations are performed with exact integer-paise arithmetic to eliminate floating-point errors.",
   },
+  {
+    question: "Is MoneyControlr affiliated with Moneycontrol.com?",
+    answer:
+      "No. MoneyControlr is an independent student budgeting and allowance tool. We are not affiliated with, endorsed by, or connected to Moneycontrol.com or Network18. We do not provide stock trading, demat accounts, mutual funds, or financial investment advice.",
+  },
 ];
 
 export default function CalculatorPage() {

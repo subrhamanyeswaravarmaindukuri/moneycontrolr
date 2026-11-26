@@ -63,6 +63,11 @@ const GUIDE_FAQS: readonly FaqItem[] = [
     answer:
       "MoneyControlr's Recurring Bills Manager allows you to reserve fixed monthly obligations before calculating your daily limit. This ensures your rent or mess payment is never accidentally spent on daily discretionary expenses.",
   },
+  {
+    question: "Is MoneyControlr affiliated with Moneycontrol.com or any investment trading service?",
+    answer:
+      "No. MoneyControlr is a completely independent student personal finance tool built exclusively for college students to pace their daily pocket money and monthly allowances. We do not offer stock trading, demat accounts, IPO allotments, mutual funds, or investment advisory, and we have no association with Network18 or Moneycontrol.com. All expense tracking in MoneyControlr is 100% manual—we never ask for bank account details, net banking credentials, or UPI PINs.",
+  },
 ];
 
 export default function GuidePage() {

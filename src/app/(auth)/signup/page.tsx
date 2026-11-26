@@ -53,7 +53,7 @@ export default function SignupPage() {
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary-light bg-white/10 px-3 py-1 rounded-full">
               <Sparkles className="w-3.5 h-3.5" />
-              Fintech For Students
+              Budgeting For Students
             </div>
             <h2 className="text-3xl xl:text-4xl font-extrabold leading-tight tracking-tight text-white">
               Know your daily safe limit before you spend.
